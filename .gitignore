@@ -1,3 +1,10 @@
+# Media files
+frontend/public/Videos/
+frontend/public/Images/Revs/
+*.MOV
+*.mp4
+*.avi
+
 # Python
 __pycache__/
 *.py[cod]
