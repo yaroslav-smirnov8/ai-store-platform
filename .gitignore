@@ -1,0 +1,75 @@
+# Python
+__pycache__/
+*.py[cod]
+venv/
+env/
+*.egg-info/
+.pytest_cache/
+.coverage
+
+# Node
+node_modules/
+dist/
+build/
+
+# Environment
+.env
+.env.local
+.env.dev
+backend/.env
+frontend/.env
+
+# Database
+database/
+*.db
+*.sqlite
+test_ai_store.db
+
+# IDE
+.vscode/
+.idea/
+.claude/
+.kiro/
+.playwright-mcp/
+
+# Logs
+logs/
+*.log
+scripts/logs/
+
+# Scripts
+*.bat
+scripts/*.bat
+
+# Plans and context
+plans/
+context/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+Dockerfile
+docker-compose.yml
+nginx.conf
+
+# Translation files
+translate_*.py
+TRANSLATION_*.md
+
+# Test files
+test_*.bat
+debug_*.bat
+
+# Portfolio materials
+portfolio/
+project-ai-store.md
+SCREencast_*.txt
+
+# Example folder
+example/
+
+# Playwright
+playwright-mcp*.json
+playwright.config.js

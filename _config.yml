@@ -1,0 +1,26 @@
+# Jekyll Configuration for GitHub Pages
+
+# Site settings
+title: John Doe | Full-Stack Developer
+description: >- # this means to ignore newlines until "baseurl:"
+  A portfolio showcasing my work in building scalable, modern web applications
+  with a focus on Python, FastAPI, React, and cloud-native technologies.
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "https://your-github-username.github.io" # the base hostname & protocol for your site
+github_username: your-github-username
+linkedin_username: your-linkedin-profile
+
+# Theme (using the default 'minima' theme which is clean and professional)
+theme: minima
+
+# Navigation links
+header_pages:
+  - index.md
+  - project-ai-store.md
+
+# Minima theme-specific settings
+minima:
+  skin: classic # or dark, auto
+  social_links:
+    - { platform: github, user_url: "https://github.com/your-github-username" }
+    - { platform: linkedin, user_url: "https://www.linkedin.com/in/your-linkedin-profile" }
