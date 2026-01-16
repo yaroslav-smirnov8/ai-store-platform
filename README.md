@@ -265,13 +265,6 @@ docker-compose -f docker-compose.prod.yml up --build -d
 - [API Documentation](API_DOCUMENTATION.md)
 - [Deployment Guide](DEPLOYMENT.md)
 
-## 🤝 Support
-
-For support and questions:
-- 📧 Email: support@aistore.com
-- 💬 Telegram: @support_bot
-- 📖 Documentation: [docs.aistore.com](https://docs.aistore.com)
-
 ## 📄 License
 
 MIT License - see LICENSE file for details.
