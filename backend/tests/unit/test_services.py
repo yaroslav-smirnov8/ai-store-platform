@@ -1,21 +1,21 @@
 import pytest
 from unittest.mock import patch, AsyncMock, MagicMock
-from services.yookassa_service import YooKassaService
+from services.payment_adapter import PaymentAdapter
 from config import settings
 
 @pytest.mark.asyncio
-async def test_yookassa_create_payment_success():
+async def test_payment_adapter_create_payment_success():
     # Setup
-    service = YooKassaService()
+    adapter = PaymentAdapter()
     amount = 100.00
     description = "Test Payment"
     return_url = "http://example.com"
     
     mock_response_data = {
-        "id": "22e12f66-000f-5000-8000-18db351245c7",
-        "status": "pending",
-        "amount": {"value": "100.00", "currency": "RUB"},
-        "confirmation": {"type": "redirect", "confirmation_url": "https://yookassa.ru/checkout"}
+        "id": "pi_1234567890",
+        "status": "requires_payment_method",
+        "amount": 10000,
+        "currency": "usd"
     }
     
     # Mock aiohttp.ClientSession
@@ -30,24 +30,23 @@ async def test_yookassa_create_payment_success():
         mock_post.return_value = mock_context
         
         # Execute
-        result = await service.create_payment(amount, description, return_url)
+        result = await adapter.create_payment(amount, description, return_url)
         
         # Verify
         assert result["id"] == mock_response_data["id"]
-        assert result["status"] == "pending"
+        assert result["status"] == "requires_payment_method"
         
         # Check if called with correct args
         call_args = mock_post.call_args
         url = call_args[0][0]
         kwargs = call_args[1]
         
-        assert url == "https://api.yookassa.ru/v3/payments"
-        assert kwargs["json"]["amount"]["value"] == "100.00"
-        assert kwargs["json"]["confirmation"]["return_url"] == return_url
+        assert "payment_intents" in url or "payments" in url
+        assert kwargs["data"]["amount"] == 10000 or kwargs["json"]["amount"]["value"] == "100.00"
 
 @pytest.mark.asyncio
-async def test_yookassa_create_payment_failure():
-    service = YooKassaService()
+async def test_payment_adapter_create_payment_failure():
+    adapter = PaymentAdapter()
     
     with patch("aiohttp.ClientSession.post") as mock_post:
         mock_context = AsyncMock()

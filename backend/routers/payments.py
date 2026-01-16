@@ -4,7 +4,7 @@ from typing import List
 from database import get_db
 from models import User, PaymentStatus
 from auth import get_current_admin_user
-from services.yookassa_service import YooKassaService
+from services.payment_adapter import PaymentAdapter
 from services.telegram_service import TelegramService
 import schemas
 import crud
@@ -19,7 +19,7 @@ async def create_payment(
     return_url: str,
     db: AsyncSession = Depends(get_db)
 ):
-    """Create YooKassa payment"""
+    """Create payment via configured payment gateway"""
     # Get order
     order = await crud.get_order(db, order_id=order_id)
     if not order:
@@ -36,9 +36,9 @@ async def create_payment(
         amount = order.total_amount
         installment_number = None
     
-    # Create payment in YooKassa
-    yookassa_service = YooKassaService()
-    payment_data = await yookassa_service.create_payment(
+    # Create payment via adapter
+    payment_adapter = PaymentAdapter()
+    payment_data = await payment_adapter.create_payment(
         amount=float(amount),
         description=f"Payment for {order.product.name}",
         return_url=return_url,
@@ -88,40 +88,40 @@ async def get_payment_status(
             detail="Payment not found"
         )
     
-    # Check status in YooKassa
-    yookassa_service = YooKassaService()
-    yookassa_payment = await yookassa_service.get_payment(payment.yookassa_payment_id)
+    # Check status with payment provider
+    payment_adapter = PaymentAdapter()
+    provider_payment = await payment_adapter.get_payment(payment.provider_payment_id)
     
     # Update local status if needed
-    yookassa_status = yookassa_payment.get("status")
-    if yookassa_status and yookassa_status != payment.status.value:
-        new_status = PaymentStatus(yookassa_status)
+    provider_status = provider_payment.get("status")
+    if provider_status and provider_status != payment.status.value:
+        new_status = PaymentStatus(provider_status)
         await crud.update_payment_status(
             db, 
             payment_id=payment.id, 
             status=new_status,
-            payment_method=yookassa_payment.get("payment_method", {}).get("type")
+            payment_method=provider_payment.get("payment_method", {}).get("type")
         )
     
     return {
         "payment_id": payment.id,
-        "status": yookassa_status or payment.status.value,
+        "status": provider_status or payment.status.value,
         "amount": float(payment.amount)
     }
 
 @router.post("/webhook")
-async def yookassa_webhook(
+async def payment_webhook(
     request: Request,
     db: AsyncSession = Depends(get_db)
 ):
-    """Handle YooKassa webhook"""
+    """Handle payment gateway webhook"""
     try:
         # Get request body
         body = await request.body()
         
         # Verify webhook
-        yookassa_service = YooKassaService()
-        if not yookassa_service.verify_webhook(body, request.headers):
+        payment_adapter = PaymentAdapter()
+        if not payment_adapter.verify_webhook(body, request.headers):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Invalid webhook signature"
@@ -134,7 +134,7 @@ async def yookassa_webhook(
         
         if event_type == "payment.succeeded":
             # Find payment
-            payment = await crud.get_payment_by_yookassa_id(
+            payment = await crud.get_payment_by_provider_id(
                 db, 
                 payment_data["id"]
             )
@@ -202,10 +202,10 @@ async def create_refund(
             detail="Payment not found"
         )
     
-    # Create refund in YooKassa
-    yookassa_service = YooKassaService()
-    refund_data = await yookassa_service.create_refund(
-        payment_id=payment.yookassa_payment_id,
+    # Create refund via payment provider
+    payment_adapter = PaymentAdapter()
+    refund_data = await payment_adapter.create_refund(
+        payment_id=payment.provider_payment_id,
         amount=amount or float(payment.amount)
     )
     
