@@ -1,6 +1,6 @@
 # 🛍️ AI Store - Telegram MiniApp Online Store
 
-Production-ready MVP for selling digital products (courses, intensives, community subscriptions) with YooKassa payment integration.
+Production-ready MVP for selling digital products (courses, intensives, community subscriptions) with secure payment processing integration.
 
 ## Quick Start
 
@@ -12,7 +12,7 @@ Production-ready MVP for selling digital products (courses, intensives, communit
    ```
 
 2. **Configure Credentials**:
-   - Edit `backend\.env` with your YooKassa and Telegram credentials
+   - Edit `backend\.env` with your payment provider and Telegram credentials
    - Edit `frontend\.env` with your configuration
 
 3. **Start Development**:
@@ -40,7 +40,7 @@ Production-ready MVP for selling digital products (courses, intensives, communit
    ```
 
 2. **Configure Credentials**:
-   - Edit `backend/.env` with your YooKassa and Telegram credentials
+   - Edit `backend/.env` with your payment provider and Telegram credentials
    - Edit `frontend/.env` with your configuration
 
 3. **Start Development**:
@@ -145,7 +145,7 @@ ai_store/
 ## 🚀 Features
 
 ### 💳 Payment System
-- **YooKassa Integration**: Secure payment processing
+- **Unified Payment Adapter**: Support for Stripe, Square, and more
 - **Installment Payments**: Flexible payment plans
 - **Webhook Support**: Real-time payment notifications
 - **Refund System**: Admin refund capabilities
@@ -199,9 +199,9 @@ ai_store/
 # Database
 DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:5432/ai_store
 
-# YooKassa
-YOOKASSA_SHOP_ID=your_shop_id
-YOOKASSA_SECRET_KEY=your_secret_key
+# Payment Provider (Stripe, Square, etc.)
+PAYMENT_PROVIDER=stripe
+PAYMENT_API_KEY=your_api_key
 
 # Telegram
 TELEGRAM_BOT_TOKEN=your_bot_token
