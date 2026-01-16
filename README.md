@@ -260,11 +260,6 @@ docker-compose -f docker-compose.prod.yml up --build -d
 - **Loading States**: Smooth user interactions
 - **Error Handling**: User-friendly error messages
 
-## 📚 Documentation
-
-- [API Documentation](API_DOCUMENTATION.md)
-- [Deployment Guide](DEPLOYMENT.md)
-
-## 📄 License
+##  License
 
 MIT License - see LICENSE file for details.
